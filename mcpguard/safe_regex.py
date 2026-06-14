@@ -78,11 +78,13 @@ log = logging.getLogger(__name__)
 # Timeout context manager
 # ---------------------------------------------------------------------------
 
+
 class RegexTimeout(Exception):  # noqa: N818 — intentional; "Timeout" suffix matches stdlib conventions (e.g. concurrent.futures.TimeoutError)
     """Raised when a regex match does not complete within the allowed time."""
 
 
 # ---------- POSIX (SIGALRM) implementation ----------
+
 
 def _sigalrm_handler(signum: int, frame: object) -> None:  # noqa: ARG001
     raise RegexTimeout("Regex match exceeded time limit (SIGALRM)")
@@ -103,6 +105,7 @@ def _timeout_posix(seconds: int) -> Generator[None, None, None]:
 
 
 # ---------- Windows / non-main-thread fallback (threading) ----------
+
 
 @contextmanager
 def _timeout_threading(seconds: int) -> Generator[None, None, None]:
@@ -143,6 +146,7 @@ def _timeout_threading(seconds: int) -> Generator[None, None, None]:
 
 # ---------- Unified public API ----------
 
+
 @contextmanager
 def regex_timeout(seconds: int = 2) -> Generator[None, None, None]:
     """Context manager that raises :class:`RegexTimeout` if the body takes too long.
@@ -164,8 +168,7 @@ def regex_timeout(seconds: int = 2) -> Generator[None, None, None]:
             m = dangerous_pattern.search(untrusted_input)
     """
     use_sigalrm = (
-        platform.system() != "Windows"
-        and threading.current_thread() is threading.main_thread()
+        platform.system() != "Windows" and threading.current_thread() is threading.main_thread()
     )
     if use_sigalrm:
         with _timeout_posix(seconds):
@@ -265,6 +268,7 @@ _PATTERN_SPECS: list[tuple[str, re.Pattern[str], str]] = [
 # ---------------------------------------------------------------------------
 # SafeRegex — pre-compiled patterns + timeout-aware search
 # ---------------------------------------------------------------------------
+
 
 class SafeRegex:
     """Pre-compiled secret-detection patterns with per-match ReDoS protection.

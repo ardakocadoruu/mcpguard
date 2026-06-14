@@ -32,18 +32,18 @@ __all__ = ["ScanProgress", "render_result"]
 
 _SEVERITY_STYLE: dict[str, Style] = {
     Severity.CRITICAL.value: Style(color="bright_red", bold=True),
-    Severity.HIGH.value:     Style(color="red"),
-    Severity.MEDIUM.value:   Style(color="yellow"),
-    Severity.LOW.value:      Style(color="blue"),
-    Severity.INFO.value:     Style(dim=True),
+    Severity.HIGH.value: Style(color="red"),
+    Severity.MEDIUM.value: Style(color="yellow"),
+    Severity.LOW.value: Style(color="blue"),
+    Severity.INFO.value: Style(dim=True),
 }
 
 _SEVERITY_BORDER: dict[str, str] = {
     Severity.CRITICAL.value: "bright_red",
-    Severity.HIGH.value:     "red",
-    Severity.MEDIUM.value:   "yellow",
-    Severity.LOW.value:      "blue",
-    Severity.INFO.value:     "white",
+    Severity.HIGH.value: "red",
+    Severity.MEDIUM.value: "yellow",
+    Severity.LOW.value: "blue",
+    Severity.INFO.value: "white",
 }
 
 _SEVERITY_ORDER = [s.value for s in Severity]
@@ -207,7 +207,11 @@ def render_result(
     # _SEVERITY_ORDER is [CRITICAL, HIGH, MEDIUM, LOW, INFO] — lower index = more severe.
     # "At or above CRITICAL" means index <= CRITICAL's index (0).
     # "At or above INFO" means index <= INFO's index (4) → show everything.
-    min_idx = _SEVERITY_ORDER.index(min_severity.upper()) if min_severity.upper() in _SEVERITY_ORDER else len(_SEVERITY_ORDER) - 1
+    min_idx = (
+        _SEVERITY_ORDER.index(min_severity.upper())
+        if min_severity.upper() in _SEVERITY_ORDER
+        else len(_SEVERITY_ORDER) - 1
+    )
     by_sev: dict[str, list[object]] = {s: [] for s in _SEVERITY_ORDER}
     for f in result.findings:
         if _SEVERITY_ORDER.index(f.severity.value) <= min_idx:

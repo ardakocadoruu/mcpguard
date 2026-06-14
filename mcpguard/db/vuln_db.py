@@ -55,9 +55,7 @@ class VulnDB:
 
         # Strip internal metadata key(s) so they don't appear as package entries.
         self._db: dict[str, dict[str, object]] = {
-            k: v
-            for k, v in raw.items()
-            if k not in _RESERVED_KEYS and isinstance(v, dict)
+            k: v for k, v in raw.items() if k not in _RESERVED_KEYS and isinstance(v, dict)
         }
         # Build a normalised lookup index: lowercase name → original key.
         self._index: dict[str, str] = {k.lower(): k for k in self._db}

@@ -133,9 +133,7 @@ async def _retry_request(
             return response
         except httpx.TimeoutException as exc:
             last_exc = exc
-            log.warning(
-                "Timeout fetching %s (attempt %d/%d)", url, attempt + 1, _MAX_RETRIES
-            )
+            log.warning("Timeout fetching %s (attempt %d/%d)", url, attempt + 1, _MAX_RETRIES)
         except httpx.HTTPStatusError as exc:
             # 4xx errors are permanent — never retry.
             if exc.response.status_code < 500:
@@ -250,11 +248,10 @@ class PackageFetcher:
 
         try:
             from mcpguard.json_safe import safe_json_loads
+
             return safe_json_loads(response.text)  # type: ignore[no-any-return]
         except Exception as exc:
-            raise PackageFetchError(
-                name, f"Invalid JSON in registry response: {exc}"
-            ) from exc
+            raise PackageFetchError(name, f"Invalid JSON in registry response: {exc}") from exc
 
     # ------------------------------------------------------------------
     # Private helpers
@@ -324,9 +321,7 @@ class PackageFetcher:
             tarball_response = await _retry_request(client, tarball_url, original_spec)
 
         tarball_bytes = tarball_response.content
-        log.debug(
-            "Downloaded %d bytes for %s@%s", len(tarball_bytes), name, resolved_version
-        )
+        log.debug("Downloaded %d bytes for %s@%s", len(tarball_bytes), name, resolved_version)
 
         pkg_name_safe = name.lstrip("@").replace("/", "__").replace("\\", "__")
         extract_dest = dest / f"{pkg_name_safe}-{resolved_version}"
@@ -336,13 +331,9 @@ class PackageFetcher:
         try:
             extract_tgz_bytes(tarball_bytes, extract_dest)
         except ExtractionError as exc:
-            raise PackageFetchError(
-                original_spec, f"Unsafe archive content: {exc.reason}"
-            ) from exc
+            raise PackageFetchError(original_spec, f"Unsafe archive content: {exc.reason}") from exc
         except Exception as exc:
-            raise PackageFetchError(
-                original_spec, f"Unexpected extraction error: {exc}"
-            ) from exc
+            raise PackageFetchError(original_spec, f"Unexpected extraction error: {exc}") from exc
 
         # npm tarballs conventionally unpack into a "package/" subdirectory.
         package_subdir = extract_dest / "package"

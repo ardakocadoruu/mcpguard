@@ -32,11 +32,11 @@ __all__ = [
 
 #: Default rule set, ordered by rule ID.
 ALL_RULES: list[Rule] = [
-    AuthRule(),              # MCP001
-    PermissionsRule(),       # MCP002
-    NetworkRule(),           # MCP003
-    SubprocessRule(),        # MCP004
-    SupplyChainRule(),       # MCP005
-    SecretsRule(),           # MCP006
-    PromptInjectionRule(),   # MCP007
+    AuthRule(),  # MCP001
+    PermissionsRule(),  # MCP002
+    NetworkRule(),  # MCP003
+    SubprocessRule(),  # MCP004
+    SupplyChainRule(),  # MCP005
+    SecretsRule(),  # MCP006
+    PromptInjectionRule(),  # MCP007
 ]

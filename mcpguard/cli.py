@@ -21,6 +21,7 @@ def _should_fail(result: object, fail_on: str) -> bool:
         return False
     threshold_idx = _SEVERITY_ORDER.index(fail_on.lower())
     from mcpguard.scanner import ScanResult
+
     assert isinstance(result, ScanResult)
     for finding in result.findings:
         if _SEVERITY_ORDER.index(finding.severity.value.lower()) >= threshold_idx:
@@ -87,10 +88,12 @@ def _scan_and_report(
 
     if output_format == "json":
         from mcpguard.reporter import JSONReporter
+
         _write_output(JSONReporter().render(result), output)
 
     elif output_format == "sarif":
         from mcpguard.reporter import SARIFReporter
+
         _write_output(SARIFReporter().render(result), output)
 
     else:
@@ -100,6 +103,7 @@ def _scan_and_report(
             from rich.console import Console
 
             from mcpguard.report.terminal import render_result
+
             console = Console(quiet=quiet)
             render_result(result, console, min_severity=min_severity)
         except (ImportError, AttributeError):
@@ -121,6 +125,7 @@ def _render_inline(result: object, min_severity: str, quiet: bool) -> None:
     from rich.markup import escape
 
     from mcpguard.scanner import ScanResult
+
     if not isinstance(result, ScanResult):
         raise TypeError(f"Expected ScanResult, got {type(result)}")
 
@@ -141,9 +146,7 @@ def _render_inline(result: object, min_severity: str, quiet: bool) -> None:
 
     console = Console(quiet=quiet)
     grade_colour = _grade_colour.get(result.grade, "white")
-    console.print(
-        f"\n[bold]mcpguard[/bold] — {escape(result.name)} v{escape(result.version)}"
-    )
+    console.print(f"\n[bold]mcpguard[/bold] — {escape(result.name)} v{escape(result.version)}")
     console.print(
         f"Score: [{grade_colour}]{result.score}/100 ({result.grade})[/]  |  "
         f"Files: {result.files_scanned}  |  "
@@ -151,11 +154,12 @@ def _render_inline(result: object, min_severity: str, quiet: bool) -> None:
     )
 
     _min_order = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]  # lower index = more severe
-    min_idx = _min_order.index(min_severity.upper()) if min_severity.upper() in _min_order else len(_min_order) - 1
-    shown = [
-        f for f in result.findings
-        if _min_order.index(f.severity.value) <= min_idx
-    ]
+    min_idx = (
+        _min_order.index(min_severity.upper())
+        if min_severity.upper() in _min_order
+        else len(_min_order) - 1
+    )
+    shown = [f for f in result.findings if _min_order.index(f.severity.value) <= min_idx]
 
     if not shown:
         console.print("[green]No findings above threshold.[/green]")
@@ -177,29 +181,36 @@ def _render_inline(result: object, min_severity: str, quiet: bool) -> None:
 # scan-local command
 # ---------------------------------------------------------------------------
 
+
 @main.command("scan-local")
 @click.argument("package_dir", type=click.Path(exists=True, file_okay=False, path_type=Path))
 @click.option(
-    "--format", "output_format",
+    "--format",
+    "output_format",
     type=click.Choice(["text", "json", "sarif"], case_sensitive=False),
-    default="text", show_default=True,
+    default="text",
+    show_default=True,
     help="Output format.",
 )
 @click.option(
-    "--output", "-o",
-    default=None, metavar="FILE",
+    "--output",
+    "-o",
+    default=None,
+    metavar="FILE",
     help="Write output to FILE instead of stdout.",
 )
 @click.option(
     "--fail-on",
     type=click.Choice(["never", "info", "low", "medium", "high", "critical"], case_sensitive=False),
-    default="critical", show_default=True,
+    default="critical",
+    show_default=True,
     help="Exit with code 1 if any finding meets or exceeds this severity.",
 )
 @click.option(
     "--min-severity",
     type=click.Choice(["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"], case_sensitive=False),
-    default="INFO", show_default=True,
+    default="INFO",
+    show_default=True,
     help="Only display findings at or above this severity.",
 )
 @click.option("--quiet", "-q", is_flag=True, default=False, help="Suppress progress output.")
@@ -219,29 +230,36 @@ def scan_local_cmd(
 # scan command — auto-detects local path vs npm package spec
 # ---------------------------------------------------------------------------
 
+
 @main.command("scan")
 @click.argument("package_spec")
 @click.option(
-    "--format", "output_format",
+    "--format",
+    "output_format",
     type=click.Choice(["text", "json", "sarif"], case_sensitive=False),
-    default="text", show_default=True,
+    default="text",
+    show_default=True,
     help="Output format.",
 )
 @click.option(
-    "--output", "-o",
-    default=None, metavar="FILE",
+    "--output",
+    "-o",
+    default=None,
+    metavar="FILE",
     help="Write output to FILE instead of stdout.",
 )
 @click.option(
     "--fail-on",
     type=click.Choice(["never", "info", "low", "medium", "high", "critical"], case_sensitive=False),
-    default="critical", show_default=True,
+    default="critical",
+    show_default=True,
     help="Exit with code 1 if any finding meets or exceeds this severity.",
 )
 @click.option(
     "--min-severity",
     type=click.Choice(["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"], case_sensitive=False),
-    default="INFO", show_default=True,
+    default="INFO",
+    show_default=True,
     help="Only display findings at or above this severity.",
 )
 @click.option("--quiet", "-q", is_flag=True, default=False, help="Suppress progress output.")
@@ -277,6 +295,7 @@ def scan_cmd(
     with tempfile.TemporaryDirectory(prefix="mcpguard-") as tmpdir:
         fetcher = PackageFetcher()
         import asyncio
+
         try:
             pkg_dir = asyncio.run(fetcher.fetch(package_spec, Path(tmpdir)))
         except PackageFetchError as exc:

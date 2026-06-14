@@ -15,6 +15,7 @@ from mcpguard.rules.base import ScanTarget
 # Minimal valid MCP package fixture
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def tmp_pkg(tmp_path: Path) -> Path:
     """Create a minimal, clean MCP package directory.
@@ -52,6 +53,7 @@ def tmp_pkg(tmp_path: Path) -> Path:
 # ---------------------------------------------------------------------------
 # Package factory fixture
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def make_pkg(tmp_path: Path) -> Callable[..., Path]:
@@ -114,42 +116,49 @@ def make_pkg(tmp_path: Path) -> Callable[..., Path]:
 # VulnDB fixture with test entries
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def mock_vuln_db(tmp_path: Path) -> VulnDB:
     """Return a VulnDB pre-populated with a few test entries."""
     db_file = tmp_path / "test_known_bad.json"
-    db_file.write_text(json.dumps({
-        "test-malware": {
-            "reason": "Known test malware package used in unit tests.",
-            "severity": "CRITICAL",
-            "cve": None,
-            "reported_date": "2026-01-01",
-            "source": "community_report",
-            "safe_alternative": None,
-        },
-        "mcp-stealer": {
-            "reason": "Known credential harvesting package.",
-            "severity": "CRITICAL",
-            "cve": None,
-            "reported_date": "2026-01-01",
-            "source": "community_report",
-            "safe_alternative": None,
-        },
-        "evil-mcp-tool": {
-            "reason": "Exfiltrates environment variables.",
-            "severity": "HIGH",
-            "cve": None,
-            "reported_date": "2026-01-01",
-            "source": "automated_scan",
-            "safe_alternative": None,
-        },
-    }), encoding="utf-8")
+    db_file.write_text(
+        json.dumps(
+            {
+                "test-malware": {
+                    "reason": "Known test malware package used in unit tests.",
+                    "severity": "CRITICAL",
+                    "cve": None,
+                    "reported_date": "2026-01-01",
+                    "source": "community_report",
+                    "safe_alternative": None,
+                },
+                "mcp-stealer": {
+                    "reason": "Known credential harvesting package.",
+                    "severity": "CRITICAL",
+                    "cve": None,
+                    "reported_date": "2026-01-01",
+                    "source": "community_report",
+                    "safe_alternative": None,
+                },
+                "evil-mcp-tool": {
+                    "reason": "Exfiltrates environment variables.",
+                    "severity": "HIGH",
+                    "cve": None,
+                    "reported_date": "2026-01-01",
+                    "source": "automated_scan",
+                    "safe_alternative": None,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
     return VulnDB(db_path=db_file)
 
 
 # ---------------------------------------------------------------------------
 # ScanTarget builder helper (not a fixture — call directly in tests)
 # ---------------------------------------------------------------------------
+
 
 def make_target(
     pkg_dir: Path,
@@ -166,7 +175,8 @@ def make_target(
 
     if source_files is None:
         source_files = sorted(
-            p for p in pkg_dir.rglob("*")
+            p
+            for p in pkg_dir.rglob("*")
             if p.is_file() and p.suffix in {".js", ".ts", ".mjs", ".cjs", ".py"}
         )
 

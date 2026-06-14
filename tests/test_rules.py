@@ -21,6 +21,7 @@ from mcpguard.rules.supply_chain import SupplyChainRule
 # Helpers
 # ============================================================================
 
+
 def _make_js_target(tmp_path: Path, content: str, filename: str = "index.js") -> ScanTarget:
     """Create a single-file JS ScanTarget from *content*."""
     pkg_dir = tmp_path / "pkg"
@@ -55,6 +56,7 @@ def _make_manifest_target(tmp_path: Path, manifest: dict) -> ScanTarget:
 # ============================================================================
 # AuthRule (MCP001)
 # ============================================================================
+
 
 class TestAuthRule:
     def test_rule_id(self):
@@ -114,8 +116,10 @@ class TestAuthRule:
         manifest = {"name": "p", "version": "1.0.0"}
         (pkg_dir / "package.json").write_text(json.dumps(manifest))
         target = ScanTarget(
-            name="p", version="1.0.0",
-            package_dir=pkg_dir, manifest=manifest,
+            name="p",
+            version="1.0.0",
+            package_dir=pkg_dir,
+            manifest=manifest,
             source_files=[py_file],
         )
         assert AuthRule().check(target) == []
@@ -144,22 +148,25 @@ class TestAuthRule:
 # PermissionsRule (MCP002)
 # ============================================================================
 
+
 class TestPermissionsRule:
     def test_rule_id(self):
         assert PermissionsRule.id == "MCP002"
 
     def test_permissions_detects_root_fs_access(self, tmp_path):
         """readFileSync('/etc/passwd') → CRITICAL finding."""
-        code = (
-            "const data = fs.readFileSync('/etc/passwd', 'utf8');\n"
-            "return data;\n"
-        )
+        code = "const data = fs.readFileSync('/etc/passwd', 'utf8');\n" "return data;\n"
         target = _make_js_target(tmp_path, code)
         findings = PermissionsRule().check(target)
 
         critical = [f for f in findings if f.severity is Severity.CRITICAL]
         assert len(critical) >= 1
-        assert any("root" in f.title.lower() or "filesystem" in f.title.lower() or "etc" in (f.evidence or "").lower() for f in critical)
+        assert any(
+            "root" in f.title.lower()
+            or "filesystem" in f.title.lower()
+            or "etc" in (f.evidence or "").lower()
+            for f in critical
+        )
 
     def test_permissions_detects_eval(self, tmp_path):
         """eval(userInput) → CRITICAL finding."""
@@ -217,6 +224,7 @@ class TestPermissionsRule:
 # NetworkRule (MCP003)
 # ============================================================================
 
+
 class TestNetworkRule:
     def test_rule_id(self):
         assert NetworkRule.id == "MCP003"
@@ -250,10 +258,7 @@ class TestNetworkRule:
 
     def test_network_clean_code_passes(self, tmp_path):
         """No network calls → 0 findings."""
-        code = (
-            "function add(a, b) { return a + b; }\n"
-            "module.exports = { add };\n"
-        )
+        code = "function add(a, b) { return a + b; }\n" "module.exports = { add };\n"
         target = _make_js_target(tmp_path, code)
         assert NetworkRule().check(target) == []
 
@@ -273,11 +278,7 @@ class TestNetworkRule:
 
     def test_network_findings_have_line_numbers(self, tmp_path):
         """Findings reference line numbers."""
-        code = (
-            "// line 1\n"
-            "// line 2\n"
-            'await fetch("https://webhook.site/abc");\n'
-        )
+        code = "// line 1\n" "// line 2\n" 'await fetch("https://webhook.site/abc");\n'
         target = _make_js_target(tmp_path, code)
         findings = NetworkRule().check(target)
         assert findings[0].line == 3
@@ -286,6 +287,7 @@ class TestNetworkRule:
 # ============================================================================
 # SubprocessRule (MCP004)
 # ============================================================================
+
 
 class TestSubprocessRule:
     def test_rule_id(self):
@@ -321,10 +323,7 @@ class TestSubprocessRule:
 
     def test_subprocess_clean_code_passes(self, tmp_path):
         """No subprocess usage → 0 findings."""
-        code = (
-            "const fs = require('fs');\n"
-            "function readFile(p) { return fs.readFileSync(p); }\n"
-        )
+        code = "const fs = require('fs');\n" "function readFile(p) { return fs.readFileSync(p); }\n"
         target = _make_js_target(tmp_path, code)
         assert SubprocessRule().check(target) == []
 
@@ -344,8 +343,10 @@ class TestSubprocessRule:
         manifest = {"name": "test", "version": "1.0.0"}
         (pkg_dir / "package.json").write_text(json.dumps(manifest))
         target = ScanTarget(
-            name="test", version="1.0.0",
-            package_dir=pkg_dir, manifest=manifest,
+            name="test",
+            version="1.0.0",
+            package_dir=pkg_dir,
+            manifest=manifest,
             source_files=[src],
         )
         findings = SubprocessRule().check(target)
@@ -361,8 +362,10 @@ class TestSubprocessRule:
         manifest = {"name": "test", "version": "1.0.0"}
         (pkg_dir / "package.json").write_text(json.dumps(manifest))
         target = ScanTarget(
-            name="test", version="1.0.0",
-            package_dir=pkg_dir, manifest=manifest,
+            name="test",
+            version="1.0.0",
+            package_dir=pkg_dir,
+            manifest=manifest,
             source_files=[src],
         )
         findings = SubprocessRule().check(target)
@@ -372,6 +375,7 @@ class TestSubprocessRule:
 # ============================================================================
 # SupplyChainRule (MCP005)
 # ============================================================================
+
 
 class TestSupplyChainRule:
     def test_rule_id(self):
@@ -489,6 +493,7 @@ class TestSupplyChainRule:
 # SecretsRule (MCP006)
 # ============================================================================
 
+
 class TestSecretsRule:
     def test_rule_id(self):
         assert SecretsRule.id == "MCP006"
@@ -539,8 +544,10 @@ class TestSecretsRule:
         manifest = {"name": "test", "version": "1.0.0"}
         (pkg_dir / "package.json").write_text(json.dumps(manifest))
         target = ScanTarget(
-            name="test", version="1.0.0",
-            package_dir=pkg_dir, manifest=manifest,
+            name="test",
+            version="1.0.0",
+            package_dir=pkg_dir,
+            manifest=manifest,
             source_files=[test_file],
         )
         findings = SecretsRule().check(target)
@@ -551,14 +558,14 @@ class TestSecretsRule:
         pkg_dir = tmp_path / "pkg"
         pkg_dir.mkdir()
         env_example = pkg_dir / ".env.example"
-        env_example.write_text(
-            "OPENAI_API_KEY=sk-proj-YourKeyHere123456789012345678901234567890\n"
-        )
+        env_example.write_text("OPENAI_API_KEY=sk-proj-YourKeyHere123456789012345678901234567890\n")
         manifest = {"name": "test", "version": "1.0.0"}
         (pkg_dir / "package.json").write_text(json.dumps(manifest))
         target = ScanTarget(
-            name="test", version="1.0.0",
-            package_dir=pkg_dir, manifest=manifest,
+            name="test",
+            version="1.0.0",
+            package_dir=pkg_dir,
+            manifest=manifest,
             source_files=[env_example],
         )
         findings = SecretsRule().check(target)
@@ -589,10 +596,7 @@ class TestSecretsRule:
 
     def test_secrets_clean_code_passes(self, tmp_path):
         """No secrets → 0 findings."""
-        code = (
-            "const name = process.env.APP_NAME;\n"
-            "function greet() { return 'hello'; }\n"
-        )
+        code = "const name = process.env.APP_NAME;\n" "function greet() { return 'hello'; }\n"
         target = _make_js_target(tmp_path, code)
         assert SecretsRule().check(target) == []
 
@@ -624,8 +628,10 @@ class TestSecretsRule:
         manifest = {"name": "test", "version": "1.0.0"}
         (pkg_dir / "package.json").write_text(json.dumps(manifest))
         target = ScanTarget(
-            name="test", version="1.0.0",
-            package_dir=pkg_dir, manifest=manifest,
+            name="test",
+            version="1.0.0",
+            package_dir=pkg_dir,
+            manifest=manifest,
             source_files=[spec_file],
         )
         assert SecretsRule().check(target) == []

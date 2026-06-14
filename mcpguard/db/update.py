@@ -73,6 +73,7 @@ async def fetch_latest_db(timeout_secs: int = 10) -> dict[str, object] | None:
     """
     try:
         from mcpguard.ssrf_guard import SSRFError, ssrf_guard
+
         try:
             ssrf_guard.validate_url(COMMUNITY_DB_URL)
         except SSRFError as exc:
@@ -90,7 +91,9 @@ async def fetch_latest_db(timeout_secs: int = 10) -> dict[str, object] | None:
             )
             response.raise_for_status()
     except httpx.TimeoutException:
-        logger.warning("update-db: request to %s timed out after %ds.", COMMUNITY_DB_URL, timeout_secs)
+        logger.warning(
+            "update-db: request to %s timed out after %ds.", COMMUNITY_DB_URL, timeout_secs
+        )
         return None
     except httpx.HTTPStatusError as exc:
         logger.warning(
@@ -110,7 +113,9 @@ async def fetch_latest_db(timeout_secs: int = 10) -> dict[str, object] | None:
         return None
 
     if not isinstance(data, dict):
-        logger.warning("update-db: unexpected remote DB shape (expected dict, got %s).", type(data).__name__)
+        logger.warning(
+            "update-db: unexpected remote DB shape (expected dict, got %s).", type(data).__name__
+        )
         return None
 
     return data
@@ -220,7 +225,7 @@ async def update_local_db(db_path: Path | None = None) -> bool:
 # ---------------------------------------------------------------------------
 
 
-def register_cli_command(cli: object) -> None:  # type: ignore[type-arg]
+def register_cli_command(cli: object) -> None:
     """Register the ``update-db`` command on a :class:`click.Group`.
 
     This function is called from ``mcpguard/cli.py`` during Click group
@@ -236,7 +241,7 @@ def register_cli_command(cli: object) -> None:  # type: ignore[type-arg]
 
     console = Console()
 
-    @cli.command("update-db")  # type: ignore[attr-defined]
+    @cli.command("update-db")  # type: ignore[attr-defined,untyped-decorator]
     @click.option(
         "--db-path",
         type=click.Path(path_type=Path),

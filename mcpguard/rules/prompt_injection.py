@@ -54,7 +54,6 @@ SUSPICIOUS_PATTERNS: list[tuple[str, str, Severity]] = [
         "Fabricated authority claim or known jailbreak language",
         Severity.CRITICAL,
     ),
-
     # -----------------------------------------------------------------------
     # Tier 2 — HIGH: Exfiltration instructions
     # Explicit commands to transmit data to an external destination.
@@ -81,7 +80,6 @@ SUSPICIOUS_PATTERNS: list[tuple[str, str, Severity]] = [
         "Suspicious 'required telemetry' parameter injection pattern",
         Severity.HIGH,
     ),
-
     # -----------------------------------------------------------------------
     # Tier 3 — HIGH: Authority mimicry
     # Impersonates system-level notes or privileged instructions.
@@ -101,7 +99,6 @@ SUSPICIOUS_PATTERNS: list[tuple[str, str, Severity]] = [
         "Compliance/consequence framing to coerce model behavior",
         Severity.HIGH,
     ),
-
     # -----------------------------------------------------------------------
     # Tier 4 — HIGH: Delayed / conditional triggers
     # Instructions that activate after a counted condition.
@@ -113,7 +110,6 @@ SUSPICIOUS_PATTERNS: list[tuple[str, str, Severity]] = [
         "Delayed-trigger instruction (activates after N uses)",
         Severity.HIGH,
     ),
-
     # -----------------------------------------------------------------------
     # Tier 5 — MEDIUM: Broad imperative commands
     # -----------------------------------------------------------------------
@@ -125,7 +121,6 @@ SUSPICIOUS_PATTERNS: list[tuple[str, str, Severity]] = [
         "Imperative command pattern in tool description",
         Severity.MEDIUM,
     ),
-
     # -----------------------------------------------------------------------
     # Tier 6 — MEDIUM: References to sensitive file paths
     # -----------------------------------------------------------------------
@@ -166,9 +161,7 @@ HIGH_RISK_CODEPOINTS: frozenset[int] = frozenset(
 SUSPICIOUS_UNICODE_CATEGORIES = frozenset(["Cf", "Cs", "Co"])
 
 # Directories to skip during file traversal
-_SKIP_DIRS = frozenset(
-    ["node_modules", ".git", "__pycache__", "dist", "build", ".venv", ".tox"]
-)
+_SKIP_DIRS = frozenset(["node_modules", ".git", "__pycache__", "dist", "build", ".venv", ".tox"])
 
 
 # ---------------------------------------------------------------------------
@@ -224,8 +217,7 @@ class PromptInjectionRule(Rule):
 
     def __init__(self) -> None:
         self._compiled: list[tuple[re.Pattern[str], str, Severity]] = [
-            (re.compile(pat), desc, sev)
-            for pat, desc, sev in SUSPICIOUS_PATTERNS
+            (re.compile(pat), desc, sev) for pat, desc, sev in SUSPICIOUS_PATTERNS
         ]
 
     # ------------------------------------------------------------------
@@ -305,6 +297,7 @@ class PromptInjectionRule(Rule):
     def _scan_json(self, path: Path) -> Iterator[_Match]:
         try:
             from mcpguard.json_safe import safe_json_load
+
             data = safe_json_load(path, max_depth=20, max_keys=5_000)
         except Exception:
             return
@@ -349,9 +342,7 @@ class PromptInjectionRule(Rule):
     # Core analysis
     # ------------------------------------------------------------------
 
-    def _check(
-        self, file_path: str, line: int | None, description: str
-    ) -> Iterator[_Match]:
+    def _check(self, file_path: str, line: int | None, description: str) -> Iterator[_Match]:
         if not description or len(description.strip()) < 10:
             return
 
@@ -399,9 +390,7 @@ class PromptInjectionRule(Rule):
         evidence_lines = [f'Description: "{m.description_text}"']
         evidence_lines.append(f"Pattern matched: {m.pattern_description}")
         if m.has_unicode_obfuscation:
-            evidence_lines.append(
-                f"Invisible codepoints: {', '.join(m.unicode_obfuscation[:5])}"
-            )
+            evidence_lines.append(f"Invisible codepoints: {', '.join(m.unicode_obfuscation[:5])}")
 
         return Finding(
             rule_id=self.id,

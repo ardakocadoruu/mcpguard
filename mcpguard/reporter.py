@@ -9,7 +9,9 @@ from mcpguard.scanner import ScanResult
 
 __all__ = ["JSONReporter", "SARIFReporter"]
 
-_SARIF_SCHEMA = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
+_SARIF_SCHEMA = (
+    "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
+)
 
 
 class JSONReporter:
@@ -65,9 +67,7 @@ class SARIFReporter:
             sarif_result: dict[str, Any] = {
                 "ruleId": finding.rule_id,
                 "level": _severity_map.get(finding.severity.value, "warning"),
-                "message": {
-                    "text": f"{finding.title}: {finding.description}"
-                },
+                "message": {"text": f"{finding.title}: {finding.description}"},
             }
             if finding.file_path and finding.line is not None:
                 sarif_result["locations"] = [

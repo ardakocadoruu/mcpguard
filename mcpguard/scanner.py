@@ -98,6 +98,7 @@ class Scanner:
     def __init__(self, rules: list[Rule] | None = None) -> None:
         if rules is None:
             from mcpguard.rules import ALL_RULES
+
             rules = ALL_RULES
         self._rules = rules
 
@@ -122,6 +123,7 @@ class Scanner:
         if manifest_path.exists():
             try:
                 from mcpguard.json_safe import safe_json_load
+
                 manifest: dict[str, object] = safe_json_load(manifest_path)
             except Exception:
                 manifest = {}

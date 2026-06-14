@@ -25,10 +25,10 @@ _SARIF_SCHEMA = (
 
 _SEVERITY_TO_LEVEL: dict[str, str] = {
     Severity.CRITICAL.value: "error",
-    Severity.HIGH.value:     "error",
-    Severity.MEDIUM.value:   "warning",
-    Severity.LOW.value:      "note",
-    Severity.INFO.value:     "note",
+    Severity.HIGH.value: "error",
+    Severity.MEDIUM.value: "warning",
+    Severity.LOW.value: "note",
+    Severity.INFO.value: "note",
 }
 
 
@@ -54,9 +54,7 @@ def render_sarif(result: ScanResult, *, indent: int = 2) -> str:
                 "defaultConfiguration": {
                     "level": _SEVERITY_TO_LEVEL.get(finding.severity.value, "warning"),
                 },
-                "helpUri": (
-                    f"https://github.com/arda-mcp/mcpguard/wiki/rules/{finding.rule_id}"
-                ),
+                "helpUri": (f"https://github.com/arda-mcp/mcpguard/wiki/rules/{finding.rule_id}"),
                 "help": {
                     "text": finding.description,
                     "markdown": f"**{finding.title}**\n\n{finding.description}",
@@ -75,9 +73,7 @@ def render_sarif(result: ScanResult, *, indent: int = 2) -> str:
                     "shortDescription": {"text": rule.title},
                     "fullDescription": {"text": rule.description},
                     "defaultConfiguration": {"level": "warning"},
-                    "helpUri": (
-                        f"https://github.com/arda-mcp/mcpguard/wiki/rules/{rule.id}"
-                    ),
+                    "helpUri": (f"https://github.com/arda-mcp/mcpguard/wiki/rules/{rule.id}"),
                 }
     except Exception:  # noqa: BLE001
         pass

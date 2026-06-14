@@ -42,6 +42,7 @@ from mcpguard.ssrf_guard import BLOCKED_RANGES, SSRFError, SSRFGuard
 # Helpers — tarball builders
 # ===========================================================================
 
+
 def _make_tgz(members: list[dict]) -> bytes:
     """Build an in-memory .tgz from a list of member descriptors.
 
@@ -75,6 +76,7 @@ def _make_tgz_file(tmp_path: Path, members: list[dict]) -> Path:
 # ===========================================================================
 # SafeExtractor tests
 # ===========================================================================
+
 
 class TestSafeExtractor:
     """Tests for mcpguard.safe_extract.SafeExtractor."""
@@ -236,7 +238,7 @@ class TestSafeExtractor:
         """Total extracted size exceeding MAX_EXTRACTED_SIZE is rejected."""
         ex = SafeExtractor()
         ex.MAX_EXTRACTED_SIZE = 500  # 500 bytes total
-        ex.MAX_SINGLE_FILE = 300      # each file is fine individually
+        ex.MAX_SINGLE_FILE = 300  # each file is fine individually
         members = [
             {"name": f"package/f{i}.bin", "content": b"x" * 200}
             for i in range(3)  # 3 × 200 = 600 > 500
@@ -255,8 +257,8 @@ class TestSafeExtractor:
         ``_extract_members`` independent of the validation pass.
         """
         ex = SafeExtractor()
-        ex.MAX_EXTRACTED_SIZE = 50   # streaming limit
-        ex.MAX_SINGLE_FILE = 80      # per-file limit (header claims 40 → passes)
+        ex.MAX_EXTRACTED_SIZE = 50  # streaming limit
+        ex.MAX_SINGLE_FILE = 80  # per-file limit (header claims 40 → passes)
 
         buf = io.BytesIO()
         with tarfile.open(fileobj=buf, mode="w:gz") as tf:
@@ -278,10 +280,7 @@ class TestSafeExtractor:
         """Exceeding MAX_FILE_COUNT is rejected during validation."""
         ex = SafeExtractor()
         ex.MAX_FILE_COUNT = 5
-        members = [
-            {"name": f"package/f{i}.txt", "content": b"hi"}
-            for i in range(6)
-        ]
+        members = [{"name": f"package/f{i}.txt", "content": b"hi"} for i in range(6)]
         tgz = _make_tgz_file(tmp_path, members)
         with pytest.raises(ExtractionError, match="[Cc]ount|[Ll]imit|members"):
             ex.extract(tgz, tmp_path / "out")
@@ -320,6 +319,7 @@ class TestSafeExtractor:
 # ===========================================================================
 # SafeRegex tests
 # ===========================================================================
+
 
 class TestSafeRegex:
     """Tests for mcpguard.safe_regex.SafeRegex."""
@@ -375,23 +375,17 @@ class TestSafeRegex:
 
     def test_private_key_detected(self) -> None:
         assert (
-            self.sr.search_line(
-                SafeRegex.PRIVATE_KEY_BLOCK, "-----BEGIN RSA PRIVATE KEY-----"
-            )
+            self.sr.search_line(SafeRegex.PRIVATE_KEY_BLOCK, "-----BEGIN RSA PRIVATE KEY-----")
             is not None
         )
         assert (
-            self.sr.search_line(
-                SafeRegex.PRIVATE_KEY_BLOCK, "-----BEGIN PRIVATE KEY-----"
-            )
+            self.sr.search_line(SafeRegex.PRIVATE_KEY_BLOCK, "-----BEGIN PRIVATE KEY-----")
             is not None
         )
 
     def test_generic_api_key_detected(self) -> None:
         assert (
-            self.sr.search_line(
-                SafeRegex.GENERIC_API_KEY, 'api_key = "ABCDEF1234567890ABCDEF"'
-            )
+            self.sr.search_line(SafeRegex.GENERIC_API_KEY, 'api_key = "ABCDEF1234567890ABCDEF"')
             is not None
         )
 
@@ -471,6 +465,7 @@ class TestSafeRegex:
 # SSRFGuard tests
 # ===========================================================================
 
+
 class TestSSRFGuard:
     """Tests for mcpguard.ssrf_guard.SSRFGuard."""
 
@@ -484,12 +479,16 @@ class TestSSRFGuard:
         """A plain public HTTPS URL should not raise."""
         # We mock DNS resolution so tests don't hit the network.
         public_ip = "104.16.1.1"
-        with mock.patch("socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]):
+        with mock.patch(
+            "socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]
+        ):
             self.guard.validate_url("https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz")
 
     def test_valid_http_url_passes(self) -> None:
         public_ip = "8.8.8.8"
-        with mock.patch("socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]):
+        with mock.patch(
+            "socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]
+        ):
             self.guard.validate_url("http://example.com/package.tgz")
 
     # -----------------------------------------------------------------------
@@ -524,17 +523,23 @@ class TestSSRFGuard:
 
     def test_port_80_allowed(self) -> None:
         public_ip = "1.2.3.4"
-        with mock.patch("socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]):
+        with mock.patch(
+            "socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]
+        ):
             self.guard.validate_url("http://example.com:80/pkg")
 
     def test_port_443_allowed(self) -> None:
         public_ip = "1.2.3.4"
-        with mock.patch("socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]):
+        with mock.patch(
+            "socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]
+        ):
             self.guard.validate_url("https://example.com:443/pkg")
 
     def test_high_port_allowed(self) -> None:
         public_ip = "1.2.3.4"
-        with mock.patch("socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]):
+        with mock.patch(
+            "socket.getaddrinfo", return_value=[(None, None, None, None, (public_ip, 0))]
+        ):
             self.guard.validate_url("https://example.com:8080/pkg")
 
     # -----------------------------------------------------------------------
@@ -566,7 +571,7 @@ class TestSSRFGuard:
 
     def test_all_blocked_ranges_are_ip_networks(self) -> None:
         for net in BLOCKED_RANGES:
-            assert isinstance(net, (ipaddress.IPv4Network, ipaddress.IPv6Network))
+            assert isinstance(net, ipaddress.IPv4Network | ipaddress.IPv6Network)
 
     def test_ipv6_loopback_blocked(self) -> None:
         with pytest.raises(SSRFError):
@@ -628,6 +633,7 @@ class TestSSRFGuard:
 # ===========================================================================
 # JSONSafe tests
 # ===========================================================================
+
 
 class TestJSONSafe:
     """Tests for mcpguard.json_safe.*"""
@@ -784,6 +790,7 @@ class TestJSONSafe:
 # ===========================================================================
 # Integration: ExtractionError is not a subclass of generic exceptions
 # ===========================================================================
+
 
 class TestExceptionHierarchy:
     """Verify exceptions are correctly typed so callers can catch precisely."""

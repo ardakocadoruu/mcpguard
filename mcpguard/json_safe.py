@@ -49,7 +49,7 @@ __all__ = [
 log = logging.getLogger(__name__)
 
 #: Default limits — override via function parameters, not by mutating these.
-_DEFAULT_MAX_SIZE: int = 5 * 1024 * 1024   # 5 MiB
+_DEFAULT_MAX_SIZE: int = 5 * 1024 * 1024  # 5 MiB
 _DEFAULT_MAX_DEPTH: int = 20
 _DEFAULT_MAX_KEYS: int = 10_000
 
@@ -73,6 +73,7 @@ class JSONSafeError(Exception):
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 def safe_json_load(
     path: Path,
@@ -187,6 +188,7 @@ def safe_json_loads(
 # Helper: depth checker
 # ---------------------------------------------------------------------------
 
+
 def check_json_depth(
     obj: Any,
     max_depth: int = _DEFAULT_MAX_DEPTH,
@@ -215,9 +217,7 @@ def check_json_depth(
         check_json_depth({"a": {"b": {"c": 1}}}, max_depth=2)   # → raises
     """
     if current > max_depth:
-        raise JSONSafeError(
-            f"JSON nesting depth exceeds limit of {max_depth} levels"
-        )
+        raise JSONSafeError(f"JSON nesting depth exceeds limit of {max_depth} levels")
 
     if isinstance(obj, dict):
         if not obj:
@@ -248,6 +248,7 @@ def check_json_depth(
 # ---------------------------------------------------------------------------
 # Helper: key counter
 # ---------------------------------------------------------------------------
+
 
 def count_json_keys(obj: Any) -> int:
     """Count the total number of dict keys across the entire *obj* tree.

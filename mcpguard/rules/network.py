@@ -138,9 +138,7 @@ class NetworkRule(Rule):
         """
         findings: list[Finding] = []
 
-        candidate_files = [
-            f for f in target.source_files if f.suffix in _SOURCE_EXTENSIONS
-        ]
+        candidate_files = [f for f in target.source_files if f.suffix in _SOURCE_EXTENSIONS]
 
         for source_file in candidate_files:
             try:

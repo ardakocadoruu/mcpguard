@@ -82,21 +82,15 @@ class ManifestParser:
         try:
             raw = manifest_path.read_text(encoding="utf-8", errors="replace")
         except OSError as exc:
-            raise ManifestError(
-                package_dir, f"Cannot read package.json: {exc}"
-            ) from exc
+            raise ManifestError(package_dir, f"Cannot read package.json: {exc}") from exc
 
         try:
             data: dict = json.loads(raw)  # type: ignore[type-arg]
         except json.JSONDecodeError as exc:
-            raise ManifestError(
-                package_dir, f"Invalid JSON in package.json: {exc}"
-            ) from exc
+            raise ManifestError(package_dir, f"Invalid JSON in package.json: {exc}") from exc
 
         if not isinstance(data, dict):
-            raise ManifestError(
-                package_dir, "package.json root must be a JSON object"
-            )
+            raise ManifestError(package_dir, "package.json root must be a JSON object")
 
         # Inject resolved directory for downstream helpers.
         data["_package_dir"] = package_dir

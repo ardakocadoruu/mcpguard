@@ -20,16 +20,34 @@ __all__ = ["SecretsRule"]
 # Files / directories to skip (test fixtures, example files)
 # ---------------------------------------------------------------------------
 
-_SKIP_DIR_COMPONENTS = frozenset({
-    "test", "tests", "spec", "specs", "__tests__",
-    "fixtures", "fixture", "mocks", "mock", "__mocks__",
-    "examples", "example", "samples", "sample",
-})
+_SKIP_DIR_COMPONENTS = frozenset(
+    {
+        "test",
+        "tests",
+        "spec",
+        "specs",
+        "__tests__",
+        "fixtures",
+        "fixture",
+        "mocks",
+        "mock",
+        "__mocks__",
+        "examples",
+        "example",
+        "samples",
+        "sample",
+    }
+)
 
-_SKIP_FILENAMES = frozenset({
-    ".env.example", ".env.sample", ".env.template", ".env.test",
-    ".env.local.example",
-})
+_SKIP_FILENAMES = frozenset(
+    {
+        ".env.example",
+        ".env.sample",
+        ".env.template",
+        ".env.test",
+        ".env.local.example",
+    }
+)
 
 _SKIP_SUFFIXES = frozenset({".test.js", ".test.ts", ".spec.js", ".spec.ts"})
 

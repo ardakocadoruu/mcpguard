@@ -34,11 +34,11 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 _SAFE_TYPES = frozenset(
     [
-        tarfile.REGTYPE,   # '0'  regular file
+        tarfile.REGTYPE,  # '0'  regular file
         tarfile.AREGTYPE,  # '\0' alternate regular file
-        tarfile.DIRTYPE,   # '5'  directory
-        tarfile.GNUTYPE_LONGNAME,   # 'L'  GNU long name (resolved by tarfile)
-        tarfile.GNUTYPE_LONGLINK,   # 'K'  GNU long link (resolved by tarfile)
+        tarfile.DIRTYPE,  # '5'  directory
+        tarfile.GNUTYPE_LONGNAME,  # 'L'  GNU long name (resolved by tarfile)
+        tarfile.GNUTYPE_LONGLINK,  # 'K'  GNU long link (resolved by tarfile)
     ]
 )
 
@@ -75,9 +75,9 @@ class SafeExtractor:
         extractor.extract(Path("package-1.0.0.tgz"), Path("/tmp/scan-work"))
     """
 
-    MAX_EXTRACTED_SIZE: int = 100 * 1024 * 1024   # 100 MiB
+    MAX_EXTRACTED_SIZE: int = 100 * 1024 * 1024  # 100 MiB
     MAX_FILE_COUNT: int = 10_000
-    MAX_SINGLE_FILE: int = 10 * 1024 * 1024        # 10 MiB
+    MAX_SINGLE_FILE: int = 10 * 1024 * 1024  # 10 MiB
     MAX_NESTING_DEPTH: int = 10
 
     # ---------------------------------------------------------------------------
@@ -212,10 +212,7 @@ class SafeExtractor:
             # We append os.sep to dest to prevent a prefix like /tmp/safe
             # matching /tmp/safe-evil.
             dest_str = str(dest_resolved)
-            if not (
-                str(dest_path) == dest_str
-                or str(dest_path).startswith(dest_str + "/")
-            ):
+            if not (str(dest_path) == dest_str or str(dest_path).startswith(dest_str + "/")):
                 raise ExtractionError(
                     f"Path traversal attempt: {member.name!r} would extract to "
                     f"{dest_path} which is outside {dest_resolved}"
@@ -364,6 +361,7 @@ class SafeExtractor:
 # ---------------------------------------------------------------------------
 # Convenience wrapper — accepts bytes directly (used by existing fetcher)
 # ---------------------------------------------------------------------------
+
 
 def extract_tgz_bytes(tarball_bytes: bytes, dest: Path) -> None:
     """Extract a ``.tgz`` supplied as *bytes* into *dest*.

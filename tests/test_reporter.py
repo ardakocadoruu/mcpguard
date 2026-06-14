@@ -13,6 +13,7 @@ from mcpguard.scanner import ScanResult, calculate_score, grade
 # Helpers — pre-built findings
 # ============================================================================
 
+
 def _critical() -> Finding:
     return Finding(
         rule_id="MCP005",
@@ -69,6 +70,7 @@ def _make_result(findings: list[Finding], name: str = "test-pkg") -> ScanResult:
 # calculate_score
 # ============================================================================
 
+
 class TestCalculateScore:
     def test_empty_findings_score_100(self):
         assert calculate_score([]) == 100
@@ -121,6 +123,7 @@ class TestCalculateScore:
 # grade
 # ============================================================================
 
+
 class TestGrade:
     def test_grade_a(self):
         assert grade(100) == "A"
@@ -159,6 +162,7 @@ class TestGrade:
 # ============================================================================
 # JSONReporter
 # ============================================================================
+
 
 class TestJSONReporter:
     def test_json_reporter_produces_valid_json(self):
@@ -228,6 +232,7 @@ class TestJSONReporter:
 # SARIFReporter
 # ============================================================================
 
+
 class TestSARIFReporter:
     def test_sarif_reporter_valid_json(self):
         result = _make_result([_critical()])
@@ -253,6 +258,7 @@ class TestSARIFReporter:
     def test_sarif_tool_driver_version(self):
         """Tool driver version matches mcpguard.__version__."""
         from mcpguard import __version__
+
         result = _make_result([_critical()])
         data = json.loads(SARIFReporter().render(result))
         assert data["runs"][0]["tool"]["driver"]["version"] == __version__
@@ -269,8 +275,8 @@ class TestSARIFReporter:
         result = _make_result([_critical(), _high(), _medium()])
         data = json.loads(SARIFReporter().render(result))
         levels = {r["ruleId"]: r["level"] for r in data["runs"][0]["results"]}
-        assert levels["MCP005"] == "error"   # CRITICAL
-        assert levels["MCP001"] == "error"   # HIGH
+        assert levels["MCP005"] == "error"  # CRITICAL
+        assert levels["MCP001"] == "error"  # HIGH
         assert levels["MCP002"] == "warning"  # MEDIUM
 
     def test_sarif_result_location(self):

@@ -37,11 +37,17 @@ _MALICIOUS_SCRIPT_RE = re.compile(
 )
 
 # Lifecycle script hook names that run automatically on npm install / publish
-_AUTO_HOOKS = frozenset({
-    "preinstall", "install", "postinstall",
-    "prepublish", "prepare",
-    "prepack", "postpack",
-})
+_AUTO_HOOKS = frozenset(
+    {
+        "preinstall",
+        "install",
+        "postinstall",
+        "prepublish",
+        "prepare",
+        "prepack",
+        "postpack",
+    }
+)
 
 # Unpinned / wildcard version specifiers
 _UNPINNED_RE = re.compile(
@@ -59,10 +65,10 @@ _UNPINNED_RE = re.compile(
 )
 
 
-
 # ---------------------------------------------------------------------------
 # Rule
 # ---------------------------------------------------------------------------
+
 
 class SupplyChainRule(Rule):
     """Detect supply-chain risks in MCP package metadata.
@@ -144,7 +150,11 @@ class SupplyChainRule(Rule):
         pkg_name: str = str(manifest.get("name", target.name))
         bad_entry = self._vuln_db.is_known_bad(pkg_name)
         if bad_entry:
-            reason = bad_entry.get("reason", "Listed in vulnerability database") if isinstance(bad_entry, dict) else str(bad_entry)
+            reason = (
+                bad_entry.get("reason", "Listed in vulnerability database")
+                if isinstance(bad_entry, dict)
+                else str(bad_entry)
+            )
             findings.append(
                 Finding(
                     rule_id=self.id,

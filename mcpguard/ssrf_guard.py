@@ -52,25 +52,25 @@ log = logging.getLogger(__name__)
 #: All IP networks that must never be the final destination of an HTTP request.
 BLOCKED_RANGES: list[ipaddress.IPv4Network | ipaddress.IPv6Network] = [
     # IPv4
-    ipaddress.ip_network("10.0.0.0/8"),         # RFC 1918 private
-    ipaddress.ip_network("172.16.0.0/12"),       # RFC 1918 private
-    ipaddress.ip_network("192.168.0.0/16"),      # RFC 1918 private
-    ipaddress.ip_network("127.0.0.0/8"),         # loopback
-    ipaddress.ip_network("169.254.0.0/16"),      # link-local / AWS IMDS
-    ipaddress.ip_network("0.0.0.0/8"),           # "this network"
-    ipaddress.ip_network("100.64.0.0/10"),       # IANA shared / CGN
-    ipaddress.ip_network("192.0.0.0/24"),        # IANA protocol assignments
-    ipaddress.ip_network("198.18.0.0/15"),       # benchmark testing
-    ipaddress.ip_network("198.51.100.0/24"),     # TEST-NET-2 (documentation)
-    ipaddress.ip_network("203.0.113.0/24"),      # TEST-NET-3 (documentation)
-    ipaddress.ip_network("240.0.0.0/4"),         # reserved
+    ipaddress.ip_network("10.0.0.0/8"),  # RFC 1918 private
+    ipaddress.ip_network("172.16.0.0/12"),  # RFC 1918 private
+    ipaddress.ip_network("192.168.0.0/16"),  # RFC 1918 private
+    ipaddress.ip_network("127.0.0.0/8"),  # loopback
+    ipaddress.ip_network("169.254.0.0/16"),  # link-local / AWS IMDS
+    ipaddress.ip_network("0.0.0.0/8"),  # "this network"
+    ipaddress.ip_network("100.64.0.0/10"),  # IANA shared / CGN
+    ipaddress.ip_network("192.0.0.0/24"),  # IANA protocol assignments
+    ipaddress.ip_network("198.18.0.0/15"),  # benchmark testing
+    ipaddress.ip_network("198.51.100.0/24"),  # TEST-NET-2 (documentation)
+    ipaddress.ip_network("203.0.113.0/24"),  # TEST-NET-3 (documentation)
+    ipaddress.ip_network("240.0.0.0/4"),  # reserved
     ipaddress.ip_network("255.255.255.255/32"),  # broadcast
     # IPv6
-    ipaddress.ip_network("::1/128"),             # loopback
-    ipaddress.ip_network("fc00::/7"),            # unique local (ULA)
-    ipaddress.ip_network("fe80::/10"),           # link-local
-    ipaddress.ip_network("::/128"),              # unspecified
-    ipaddress.ip_network("::ffff:0:0/96"),       # IPv4-mapped (covered above, belt & braces)
+    ipaddress.ip_network("::1/128"),  # loopback
+    ipaddress.ip_network("fc00::/7"),  # unique local (ULA)
+    ipaddress.ip_network("fe80::/10"),  # link-local
+    ipaddress.ip_network("::/128"),  # unspecified
+    ipaddress.ip_network("::ffff:0:0/96"),  # IPv4-mapped (covered above, belt & braces)
 ]
 
 #: Schemes that mcpguard is allowed to fetch from.
@@ -83,30 +83,33 @@ _PRIVILEGED_EXCEPTIONS: frozenset[int] = frozenset([80, 443])
 #: These are common targets in SSRF attacks against internal infrastructure
 #: (databases, caches, message queues) that a package scanner has no reason
 #: to connect to.
-_BLOCKED_SERVICE_PORTS: frozenset[int] = frozenset([
-    3306,   # MySQL
-    3307,   # MySQL alternate
-    5432,   # PostgreSQL
-    5433,   # PostgreSQL alternate
-    6379,   # Redis
-    6380,   # Redis TLS
-    27017,  # MongoDB
-    27018,  # MongoDB alternate
-    5672,   # RabbitMQ AMQP
-    5671,   # RabbitMQ AMQP TLS
-    9200,   # Elasticsearch HTTP
-    9300,   # Elasticsearch transport
-    2181,   # ZooKeeper
-    2379,   # etcd client
-    2380,   # etcd peer
-    11211,  # Memcached
-    9092,   # Kafka
-])
+_BLOCKED_SERVICE_PORTS: frozenset[int] = frozenset(
+    [
+        3306,  # MySQL
+        3307,  # MySQL alternate
+        5432,  # PostgreSQL
+        5433,  # PostgreSQL alternate
+        6379,  # Redis
+        6380,  # Redis TLS
+        27017,  # MongoDB
+        27018,  # MongoDB alternate
+        5672,  # RabbitMQ AMQP
+        5671,  # RabbitMQ AMQP TLS
+        9200,  # Elasticsearch HTTP
+        9300,  # Elasticsearch transport
+        2181,  # ZooKeeper
+        2379,  # etcd client
+        2380,  # etcd peer
+        11211,  # Memcached
+        9092,  # Kafka
+    ]
+)
 
 
 # ---------------------------------------------------------------------------
 # Exception
 # ---------------------------------------------------------------------------
+
 
 class SSRFError(Exception):
     """Raised when a URL or resolved IP violates the SSRF policy.
@@ -125,6 +128,7 @@ class SSRFError(Exception):
 # ---------------------------------------------------------------------------
 # Guard class
 # ---------------------------------------------------------------------------
+
 
 class SSRFGuard:
     """Validates URLs and resolved IPs against the SSRF policy.

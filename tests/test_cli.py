@@ -19,6 +19,7 @@ def runner() -> CliRunner:
 # version command
 # ============================================================================
 
+
 def test_version_command(runner):
     """'mcpguard version' prints the version string."""
     result = runner.invoke(main, ["version"])
@@ -30,14 +31,15 @@ def test_version_command(runner):
 # rules command
 # ============================================================================
 
+
 def test_rules_command(runner):
     """'mcpguard rules' lists all six built-in rules."""
     result = runner.invoke(main, ["rules"])
     assert result.exit_code == 0
     for rule_id in ("MCP001", "MCP002", "MCP003", "MCP004", "MCP005", "MCP006"):
-        assert rule_id in result.output, (
-            f"Expected {rule_id} in rules output, got:\n{result.output}"
-        )
+        assert (
+            rule_id in result.output
+        ), f"Expected {rule_id} in rules output, got:\n{result.output}"
 
 
 def test_rules_command_shows_titles(runner):
@@ -54,6 +56,7 @@ def test_rules_command_shows_titles(runner):
 # ============================================================================
 # scan-local — clean package
 # ============================================================================
+
 
 def test_scan_local_clean_package(runner, tmp_pkg):
     """A clean package exits with code 0."""
@@ -76,6 +79,7 @@ def test_scan_local_text_output_contains_score(runner, tmp_pkg):
 # ============================================================================
 # scan-local — JSON format
 # ============================================================================
+
 
 def test_scan_format_json(runner, tmp_pkg):
     """--format json produces valid JSON with required fields."""
@@ -114,6 +118,7 @@ def test_scan_format_json_clean_score_is_100(runner, tmp_pkg):
 # scan-local — SARIF format
 # ============================================================================
 
+
 def test_scan_format_sarif(runner, tmp_pkg):
     """--format sarif produces valid SARIF 2.1.0 JSON."""
     result = runner.invoke(main, ["scan-local", str(tmp_pkg), "--format", "sarif"])
@@ -129,6 +134,7 @@ def test_scan_format_sarif(runner, tmp_pkg):
 # ============================================================================
 # scan-local — CRITICAL exit code
 # ============================================================================
+
 
 def test_scan_exit_code_on_critical(runner, tmp_path):
     """A package with a malicious postinstall script exits with code 1."""
@@ -176,6 +182,7 @@ def test_scan_exit_code_on_critical_json_still_produced(runner, tmp_path):
 # scan-local — min-severity filter
 # ============================================================================
 
+
 def test_scan_min_severity_filters_findings(runner, tmp_path):
     """--min-severity CRITICAL hides lower-severity findings from text output."""
     pkg_dir = tmp_path / "pkg"
@@ -188,13 +195,16 @@ def test_scan_min_severity_filters_findings(runner, tmp_path):
     # Default output (INFO and above) might show the MEDIUM finding
     runner.invoke(main, ["scan-local", str(pkg_dir)])
     # With CRITICAL filter, clean exit
-    result_critical = runner.invoke(main, ["scan-local", str(pkg_dir), "--min-severity", "CRITICAL"])
+    result_critical = runner.invoke(
+        main, ["scan-local", str(pkg_dir), "--min-severity", "CRITICAL"]
+    )
     assert result_critical.exit_code == 0
 
 
 # ============================================================================
 # scan-local — invalid path
 # ============================================================================
+
 
 def test_scan_nonexistent_path_errors(runner, tmp_path):
     """Pointing scan-local at a nonexistent directory produces an error."""
