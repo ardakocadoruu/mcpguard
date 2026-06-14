@@ -1,0 +1,58 @@
+name: Feature Request
+description: Suggest a new rule, improvement, or capability for mcpguard
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please describe your idea clearly so we can evaluate it.
+
+  - type: dropdown
+    id: feature_type
+    attributes:
+      label: Feature type
+      options:
+        - "New detection rule"
+        - "Output format / reporting"
+        - "CLI / UX improvement"
+        - "Integration (IDE, CI, pre-commit, etc.)"
+        - "Performance improvement"
+        - "Documentation"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or motivation
+      description: What problem does this feature solve? What threat, use-case, or workflow gap is it addressing?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the feature you'd like to see. If proposing a new rule, include example malicious code patterns it should detect.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Are there workarounds or alternative approaches you've considered?
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, references, CVEs, or anything else relevant.
+    validations:
+      required: false

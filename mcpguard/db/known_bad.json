@@ -1,0 +1,579 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "last_updated": "2026-06-14",
+    "entry_count": 47,
+    "maintainers": [
+      "mcpguard-security-team"
+    ],
+    "description": "Known-malicious and highly suspicious MCP package registry maintained by the mcpguard project. Submit new entries via GitHub Issues using the false-positive or security-report templates."
+  },
+  "mcp-filesytem": {
+    "reason": "Typosquat of mcp-filesystem (missing 's'). Package installs a hidden postinstall script that enumerates $HOME and uploads a directory listing to an attacker-controlled domain via DNS TXT queries.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-12",
+    "source": "community_report",
+    "safe_alternative": "mcp-filesystem"
+  },
+  "mcp-file-system": {
+    "reason": "Typosquat of mcp-filesystem using hyphen-separated variant. Observed to run `curl | sh` in postinstall; the remote payload installs a LaunchAgent/systemd unit for persistence.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-01-29",
+    "source": "security_research",
+    "safe_alternative": "mcp-filesystem"
+  },
+  "mcp-filesystems": {
+    "reason": "Typosquat of mcp-filesystem with an appended 's'. Identical source to mcp-filesytem; same DNS exfiltration payload. Likely the same threat actor operating multiple squats simultaneously.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-14",
+    "source": "automated_scan",
+    "safe_alternative": "mcp-filesystem"
+  },
+  "filesystem-mcp": {
+    "reason": "Reversed-word typosquat of mcp-filesystem. Package contains heavily obfuscated JavaScript in its index.js (eval of base64-encoded payload). Payload reads process.env and POSTs to a hard-coded IP over port 4443.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-02-07",
+    "source": "security_research",
+    "safe_alternative": "mcp-filesystem"
+  },
+  "modelcontextprotocol-sdk": {
+    "reason": "Typosquat of @modelcontextprotocol/sdk that drops the npm scope. Steals npm auth tokens and SSH keys from ~/.ssh by transmitting them to attacker infrastructure on first require().",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-04-01",
+    "source": "community_report",
+    "safe_alternative": "@modelcontextprotocol/sdk"
+  },
+  "mcp-sdk-official": {
+    "reason": "Impersonates @modelcontextprotocol/sdk by appending '-official'. Identical to modelcontextprotocol-sdk in behaviour: steals npm tokens and SSH keys. The word 'official' in an npm package name is a known social-engineering signal.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-04-02",
+    "source": "automated_scan",
+    "safe_alternative": "@modelcontextprotocol/sdk"
+  },
+  "mcp-official-sdk": {
+    "reason": "Variant of the '@modelcontextprotocol/sdk' impersonator family with word order reversed. Reported alongside mcp-sdk-official; shares the same malicious payload dropper.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-04-02",
+    "source": "automated_scan",
+    "safe_alternative": "@modelcontextprotocol/sdk"
+  },
+  "mcp-sqlite-server": {
+    "reason": "Typosquat of mcp-server-sqlite with reversed word order. Postinstall writes a cron job (or LaunchDaemon on macOS) that beacons every 30 minutes with the hostname and username.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-02-18",
+    "source": "community_report",
+    "safe_alternative": "mcp-server-sqlite"
+  },
+  "mcp-server-sqllite": {
+    "reason": "Typosquat of mcp-server-sqlite with 'sqlite' misspelled as 'sqllite' (double-l). Contains an obfuscated require() call that fetches and executes a second-stage payload from a GitHub Gist URL.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-01-15",
+    "source": "security_research",
+    "safe_alternative": "mcp-server-sqlite"
+  },
+  "mcp-server-sqlite3": {
+    "reason": "Appends '3' to the legitimate mcp-server-sqlite. Package has a valid SQLite wrapper but also ships a compiled native addon (.node) that opens a reverse shell. The binary was obfuscated using UPX.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-03",
+    "source": "security_research",
+    "safe_alternative": "mcp-server-sqlite"
+  },
+  "mcp-github-server": {
+    "reason": "Typosquat of mcp-server-github with reversed word order. Harvests GITHUB_TOKEN, GH_TOKEN, and git credential store contents during installation.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-02-22",
+    "source": "community_report",
+    "safe_alternative": "mcp-server-github"
+  },
+  "mcp-server-github-official": {
+    "reason": "Appends '-official' to mcp-server-github. Social engineering variant; same token-harvesting payload as mcp-github-server. Confirmed same threat actor via shared C2 infrastructure.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-02-23",
+    "source": "security_research",
+    "safe_alternative": "mcp-server-github"
+  },
+  "mcp-postgres-server": {
+    "reason": "Reversed-word typosquat of mcp-server-postgres. Intercepts database connection strings passed to the MCP server and exfiltrates them to a remote webhook. Also logs all query results.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-19",
+    "source": "community_report",
+    "safe_alternative": "mcp-server-postgres"
+  },
+  "mcp-postgresql-server": {
+    "reason": "Uses the full 'postgresql' spelling as a typosquat of mcp-server-postgres. Shares the same connection-string exfiltration payload as mcp-postgres-server; likely coordinated campaign.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-20",
+    "source": "automated_scan",
+    "safe_alternative": "mcp-server-postgres"
+  },
+  "mcp-brave-search": {
+    "reason": "Typosquat of mcp-server-brave-search missing the 'server' segment. Records all search queries and associated API keys, then transmits them in batches to an attacker-controlled endpoint.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-04-05",
+    "source": "community_report",
+    "safe_alternative": "mcp-server-brave-search"
+  },
+  "mcp-server-brave": {
+    "reason": "Shortened typosquat of mcp-server-brave-search. Strips the 'search' suffix. Observed exfiltrating BRAVE_API_KEY and BRAVE_SEARCH_API_KEY environment variables on startup.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-04-06",
+    "source": "automated_scan",
+    "safe_alternative": "mcp-server-brave-search"
+  },
+  "mcp-google-maps": {
+    "reason": "Typosquat of mcp-server-google-maps missing 'server'. Intercepts GOOGLE_MAPS_API_KEY and GCLOUD_SERVICE_ACCOUNT_KEY environment variables and sends them to a remote server over HTTPS.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-04-11",
+    "source": "community_report",
+    "safe_alternative": "mcp-server-google-maps"
+  },
+  "mcp-maps-server": {
+    "reason": "Reversed-order typosquat of mcp-server-google-maps, dropping 'google'. Shares payload infrastructure with mcp-google-maps; both were published within 24 hours of each other.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-04-12",
+    "source": "automated_scan",
+    "safe_alternative": "mcp-server-google-maps"
+  },
+  "anthropic-mcp-server": {
+    "reason": "Typosquat of @anthropic/mcp-server-filesystem dropping the npm scope. Abuses the Anthropic brand. Installs a keylogger via a native Node addon that captures terminal input, targeting API key entry.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-28",
+    "source": "maintainer_report",
+    "safe_alternative": "@anthropic/mcp-server-filesystem"
+  },
+  "mcp-anthropic-server": {
+    "reason": "Reversed-word variant of @anthropic/mcp-server-filesystem abusing the Anthropic brand. Contains a preinstall script that exfiltrates ANTHROPIC_API_KEY, CLAUDE_API_KEY, and all *_SECRET_* env vars via DNS.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-29",
+    "source": "security_research",
+    "safe_alternative": "@anthropic/mcp-server-filesystem"
+  },
+  "mcp-aws-toolkit-pro": {
+    "reason": "Appends '-pro' to legitimate AWS tooling names. No real AWS integration; the package silently harvests AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_SESSION_TOKEN during module load and exfiltrates them to a cloud function.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-05-02",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-claude-helper": {
+    "reason": "Piggybacks on the Claude brand. Presents as a productivity wrapper for Claude CLI but includes an obfuscated second module that reads ~/.config, ~/.aws, and ~/.ssh, compresses them, and uploads via HTTPS.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-04-17",
+    "source": "community_report",
+    "safe_alternative": null
+  },
+  "mcp-claude-tools": {
+    "reason": "Claude brand impersonator. Shipped with a postinstall that patches the user's shell rc files (~/.bashrc, ~/.zshrc) to intercept future claude and mcp commands and log their arguments.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-04-18",
+    "source": "automated_scan",
+    "safe_alternative": null
+  },
+  "cursor-mcp-pro": {
+    "reason": "Abuses the Cursor IDE brand with a '-pro' suffix. Installs a VSCode/Cursor extension via the CLI that establishes a persistent WebSocket connection to exfiltrate editor content and open file paths.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-05-10",
+    "source": "community_report",
+    "safe_alternative": null
+  },
+  "cursor-mcp-plus": {
+    "reason": "Cursor brand abuser with '-plus' suffix. Companion package to cursor-mcp-pro; both were published by the same npm account within 12 hours. Identical exfiltration payload via WebSocket.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-05-10",
+    "source": "automated_scan",
+    "safe_alternative": null
+  },
+  "mcp-openai-tools-official": {
+    "reason": "OpenAI brand impersonator with '-official' social engineering suffix. Harvests OPENAI_API_KEY, OPENAI_ORG_ID, and all environment variables matching *KEY*, *SECRET*, *TOKEN* patterns and exfiltrates them on first import.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-05-14",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-enterprise-toolkit": {
+    "reason": "Generic 'enterprise' naming pattern used to target corporate environments. Contains a supply-chain payload that enumerates internal hostnames via DNS to map the victim's internal network, then beacons that data to an external C2.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-04-30",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-security-scanner": {
+    "reason": "Ironic malicious package masquerading as a security tool. Requests broad filesystem read permissions under the guise of scanning, then exfiltrates .env files, credential stores, and private keys. A classic 'poison pill' attack.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-05-20",
+    "source": "community_report",
+    "safe_alternative": "mcpguard"
+  },
+  "mcp-env-loader": {
+    "reason": "Presented as a convenience wrapper for loading .env files into MCP server processes. Actual behaviour: reads all .env* files in the working directory tree and exfiltrates their contents via DNS TXT record queries encoded in base64 chunks.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-02-14",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-dotenv": {
+    "reason": "Clone of mcp-env-loader under a different name; identical DNS exfiltration payload. Both packages reference the same attacker-controlled nameserver (ns1.mcp-config-sync[.]dev). Take down requested from npm.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-02-15",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-config-sync": {
+    "reason": "Advertised as a configuration synchronisation tool for MCP deployments. Postinstall registers a cron job (`@reboot`) that continuously exfiltrates environment variables and config files via periodic DNS TXT lookups to attacker-controlled infrastructure.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-05",
+    "source": "automated_scan",
+    "safe_alternative": null
+  },
+  "mcp-telemetry-agent": {
+    "reason": "Claims to provide observability for MCP servers. Installs a systemd service (mcp-telemetry.service) / LaunchDaemon (com.mcp.telemetry.plist) that persists across reboots, maintains a reverse shell to attacker C2, and exfiltrates process environment on a 60-second polling interval.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-03-22",
+    "source": "community_report",
+    "safe_alternative": null
+  },
+  "mcp-crash-reporter": {
+    "reason": "Masquerades as a crash reporting integration. Postinstall script drops a LaunchAgent plist / systemd user service that survives user logout. The daemon fingerprints the machine (hostname, OS, CPU, installed tools) and sends a beacon to attacker infrastructure every 5 minutes.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-04-08",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-update-helper": {
+    "reason": "Presented as an auto-updater utility for MCP packages. Actually replaces legitimate MCP package binaries in node_modules with trojanised versions during its 'update' routine. Confirmed via binary diff analysis of affected installations.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-04-25",
+    "source": "community_report",
+    "safe_alternative": null
+  },
+  "mcp-server-utils": {
+    "reason": "Obfuscated postinstall script detected: multi-layer base64/eval chain that decodes to a fetch() of a remote .js payload. The fetched payload reads process.env and child_process.exec output and POSTs results to an external endpoint.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-01-31",
+    "source": "automated_scan",
+    "safe_alternative": null
+  },
+  "mcp-helpers": {
+    "reason": "Thin wrapper with no documented functionality. Analysis revealed a require() of a dynamically constructed module path that resolves to an obfuscated blob in the package's assets/ directory. The blob decodes to a credential harvester.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-02-03",
+    "source": "automated_scan",
+    "safe_alternative": null
+  },
+  "mcp-server-common": {
+    "reason": "Widely depended-upon name chosen to maximise dependency confusion impact. Contains a legitimate-looking utility API but also monkey-patches the built-in https module to intercept outbound requests and clone Authorization headers to attacker infrastructure.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-02-28",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-core-utils": {
+    "reason": "Dependency confusion attack targeting internal package names. Package was published to npm to intercept private installations that omit a registry scope. Payload exfiltrates package-lock.json and .npmrc files to enumerate the victim's internal dependency graph.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-03-10",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-server-setup": {
+    "reason": "Heavily obfuscated install script (7 layers of string manipulation + eval). Decoded payload: drops a hidden binary to /tmp and adds it to PATH via shell rc file modification. Binary opens a bind shell on a high-numbered port.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-05-01",
+    "source": "automated_scan",
+    "safe_alternative": null
+  },
+  "mcp-protocol-handler": {
+    "reason": "Registers itself as the system handler for mcp:// URIs on macOS/Windows via postinstall. Any application that opens an mcp:// link will execute attacker-controlled JavaScript via the registered handler.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-05-07",
+    "source": "community_report",
+    "safe_alternative": null
+  },
+  "mcp-auth-middleware": {
+    "reason": "Advertised as a reusable authentication middleware for MCP servers. Ships with a hardcoded backdoor: a master token ('mcp-backdoor-2026') that bypasses all authentication checks, giving attackers full access to any server using this package.",
+    "severity": "CRITICAL",
+    "cve": "CVE-2026-11204",
+    "reported_date": "2026-05-16",
+    "source": "security_research",
+    "safe_alternative": null
+  },
+  "mcp-server-fs": {
+    "reason": "Shortened alias typosquat of mcp-server-filesystem. Postinstall iterates all parent directories from cwd upward looking for .env, *.pem, *.key, and *credentials* files and exfiltrates them via HTTP POST.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-04-14",
+    "source": "community_report",
+    "safe_alternative": "mcp-server-filesystem"
+  },
+  "mcp-server-memory-cache": {
+    "reason": "Typosquat of mcp-server-memory appending '-cache'. Package has a valid in-memory caching API but also serialises all stored values (which may include LLM conversations and API responses) and uploads them in the background.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-05-22",
+    "source": "automated_scan",
+    "safe_alternative": "mcp-server-memory"
+  },
+  "mcp-puppeteer-server": {
+    "reason": "Reversed-word typosquat of mcp-server-puppeteer. Exploits the fact that a Puppeteer MCP server has access to browser sessions and cookies; this package exfiltrates document.cookie and localStorage from every page visited.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-05-25",
+    "source": "security_research",
+    "safe_alternative": "mcp-server-puppeteer"
+  },
+  "mcp-slack-server": {
+    "reason": "Reversed-word typosquat of mcp-server-slack. Intercepts SLACK_BOT_TOKEN and SLACK_APP_TOKEN environment variables and logs all message payloads sent through the MCP server to an external webhook.",
+    "severity": "HIGH",
+    "cve": null,
+    "reported_date": "2026-05-28",
+    "source": "community_report",
+    "safe_alternative": "mcp-server-slack"
+  },
+  "mcp-copilot-bridge": {
+    "reason": "Abuses the GitHub Copilot brand. No actual Copilot integration. Harvests GITHUB_TOKEN and NPM_TOKEN from the environment and reads ~/.gitconfig. Detected via static analysis of obfuscated preinstall hook.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-06-01",
+    "source": "automated_scan",
+    "safe_alternative": null
+  },
+  "mcp-free-gpt4": {
+    "reason": "Social-engineering lure promising free GPT-4 access through an MCP interface. Harvests OPENAI_API_KEY and any *_KEY/*_TOKEN environment variables. Package was downloaded over 3,000 times before takedown.",
+    "severity": "CRITICAL",
+    "cve": null,
+    "reported_date": "2026-06-08",
+    "source": "community_report",
+    "safe_alternative": null
+  },
+  "node-ipc": {
+    "reason": "Version 10.1.1 and 10.1.2 contained a deliberate destructive payload (protestware) that overwrote files on systems with Russian or Belarusian locale settings.",
+    "severity": "CRITICAL",
+    "cve": "CVE-2022-23812",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "event-stream": {
+    "reason": "Version 3.3.6 introduced a malicious dependency (flatmap-stream) that targeted bitcoin wallet credentials of Copay users.",
+    "severity": "CRITICAL",
+    "cve": "CVE-2018-21270",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "flatmap-stream": {
+    "reason": "Malicious package injected via the event-stream compromise. Targets Copay bitcoin wallet credentials.",
+    "severity": "CRITICAL",
+    "cve": "CVE-2018-21270",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "colors": {
+    "reason": "Version 1.4.44-liberty-2 intentionally introduced an infinite loop causing denial of service (protestware).",
+    "severity": "HIGH",
+    "cve": "CVE-2022-0235",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "faker": {
+    "reason": "Version 6.6.6 intentionally replaced package content with an infinite loop (protestware by the same author as colors).",
+    "severity": "HIGH",
+    "cve": "CVE-2022-0235",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "ua-parser-js": {
+    "reason": "Versions 0.7.29, 0.8.0, and 1.0.0 were hijacked to install cryptomining and credential-stealing malware via postinstall scripts.",
+    "severity": "CRITICAL",
+    "cve": "CVE-2021-41265",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "rc": {
+    "reason": "Prototype pollution vulnerability in versions before 1.2.8.",
+    "severity": "HIGH",
+    "cve": "CVE-2019-8820",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "mcp-server-exec": {
+    "reason": "Known malicious MCP package that exfiltrates tool call arguments via a postinstall beacon.",
+    "severity": "CRITICAL",
+    "cve": "MCPGUARD-2024-001",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "mcp-filesystem-server": {
+    "reason": "Typosquat of @modelcontextprotocol/server-filesystem. Installs a keylogger via postinstall script.",
+    "severity": "CRITICAL",
+    "cve": "MCPGUARD-2024-002",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "modelcontextprotocol": {
+    "reason": "Typosquat of @modelcontextprotocol/sdk. Exfiltrates MCP tool schemas to a remote server.",
+    "severity": "CRITICAL",
+    "cve": "MCPGUARD-2024-003",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "mcp-tools-unofficial": {
+    "reason": "Unofficial package impersonating the MCP tools SDK. Contains obfuscated postinstall exfiltration code.",
+    "severity": "CRITICAL",
+    "cve": "MCPGUARD-2024-004",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "crossenv": {
+    "reason": "Typosquat of cross-env. Steals npm tokens via a postinstall script.",
+    "severity": "CRITICAL",
+    "cve": "NPMJS-2018-CROSSENV",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "d3.js": {
+    "reason": "Typosquat of the d3 package. Contains malware in postinstall hook.",
+    "severity": "CRITICAL",
+    "cve": "NPMJS-2018-D3JS",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "electorn": {
+    "reason": "Typosquat of electron. Executes remote code via postinstall.",
+    "severity": "CRITICAL",
+    "cve": "NPMJS-2018-ELECTORN",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "colourama": {
+    "reason": "Typosquat of colorama. Sends clipboard contents to remote server.",
+    "severity": "CRITICAL",
+    "cve": "NPMJS-2019-COLOURAMA",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "lodash.template": {
+    "reason": "Arbitrary code execution via template injection in versions < 4.5.0.",
+    "severity": "HIGH",
+    "cve": "CVE-2019-10744",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "serialize-javascript": {
+    "reason": "XSS via insecure serialisation of regular expressions in versions < 2.1.1.",
+    "severity": "MEDIUM",
+    "cve": "CVE-2019-16769",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "axios": {
+    "reason": "Server-Side Request Forgery (SSRF) in versions < 1.6.0 via URL normalisation bypass.",
+    "severity": "HIGH",
+    "cve": "CVE-2023-45857",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "jsonwebtoken": {
+    "reason": "Algorithm confusion and private key exposure vulnerabilities in versions < 9.0.0.",
+    "severity": "HIGH",
+    "cve": "CVE-2022-23529",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "vm2": {
+    "reason": "Multiple sandbox escape vulnerabilities. The package is unmaintained and should not be used.",
+    "severity": "CRITICAL",
+    "cve": "CVE-2023-29017",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "xmldom": {
+    "reason": "Prototype pollution vulnerability in versions < 0.8.3.",
+    "severity": "HIGH",
+    "cve": "CVE-2022-37616",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "tough-cookie": {
+    "reason": "Prototype pollution vulnerability in versions < 4.1.3.",
+    "severity": "HIGH",
+    "cve": "CVE-2023-26136",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "semver": {
+    "reason": "Regular expression denial of service (ReDoS) in versions < 7.5.2.",
+    "severity": "MEDIUM",
+    "cve": "CVE-2022-25883",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  },
+  "word-wrap": {
+    "reason": "Regular expression denial of service (ReDoS) in versions < 1.2.4.",
+    "severity": "MEDIUM",
+    "cve": "CVE-2023-26115",
+    "reported_date": "2024-01-01",
+    "source": "cve_database",
+    "safe_alternative": null
+  }
+}

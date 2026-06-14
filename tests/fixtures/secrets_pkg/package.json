@@ -1,0 +1,13 @@
+{
+  "name": "mcp-server-hardcoded-secrets",
+  "version": "0.1.0",
+  "description": "An MCP server with hardcoded API keys — intentionally insecure fixture",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "openai": "^4.0.0",
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {}
+}

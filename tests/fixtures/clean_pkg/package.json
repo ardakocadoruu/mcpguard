@@ -1,0 +1,11 @@
+{
+  "name": "mcp-server-example-clean",
+  "version": "1.0.0",
+  "description": "A completely benign MCP server example with no security issues",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {}
+}

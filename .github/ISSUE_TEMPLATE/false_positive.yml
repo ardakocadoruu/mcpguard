@@ -1,0 +1,65 @@
+name: False Positive Report
+description: Report a finding that incorrectly flags safe code
+title: "[False Positive]: "
+labels: ["false-positive", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to report a **false positive** — a finding raised by mcpguard that you believe is incorrect for legitimate code.
+
+        Please provide enough context for us to reproduce and evaluate the finding. Do **not** paste actual secrets; redact or replace them with placeholders.
+
+  - type: dropdown
+    id: rule_id
+    attributes:
+      label: Rule ID that fired
+      description: Which mcpguard rule produced the false positive?
+      options:
+        - "MCP001 — Authentication check"
+        - "MCP002 — Permissions analysis"
+        - "MCP003 — Network exfiltration detection"
+        - "MCP004 — Shell injection detection"
+        - "MCP005 — Supply chain analysis"
+        - "MCP006 — Secret detection"
+    validations:
+      required: true
+
+  - type: input
+    id: package
+    attributes:
+      label: Package name and version
+      description: The package or local path that was scanned.
+      placeholder: "e.g. my-mcp-server@2.0.1  or  ./my-local-package"
+    validations:
+      required: true
+
+  - type: textarea
+    id: why_fp
+    attributes:
+      label: Why this is a false positive
+      description: Explain why the flagged code is actually safe or expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence — what the code actually does
+      description: |
+        Paste the relevant code snippet (redact any real secrets/tokens). Explain what it is doing and why it is benign.
+      render: python
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Before submitting
+      options:
+        - label: I have redacted any real secrets or sensitive values from the code snippet above.
+          required: true
+        - label: I have verified this is not a true positive (the code is actually safe).
+          required: true
