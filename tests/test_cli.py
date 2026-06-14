@@ -12,7 +12,7 @@ from mcpguard.cli import main
 
 @pytest.fixture
 def runner() -> CliRunner:
-    return CliRunner(mix_stderr=False)
+    return CliRunner()
 
 
 # ============================================================================
