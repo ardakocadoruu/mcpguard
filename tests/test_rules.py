@@ -155,7 +155,7 @@ class TestPermissionsRule:
 
     def test_permissions_detects_root_fs_access(self, tmp_path):
         """readFileSync('/etc/passwd') → CRITICAL finding."""
-        code = "const data = fs.readFileSync('/etc/passwd', 'utf8');\n" "return data;\n"
+        code = "const data = fs.readFileSync('/etc/passwd', 'utf8');\nreturn data;\n"
         target = _make_js_target(tmp_path, code)
         findings = PermissionsRule().check(target)
 
@@ -258,7 +258,7 @@ class TestNetworkRule:
 
     def test_network_clean_code_passes(self, tmp_path):
         """No network calls → 0 findings."""
-        code = "function add(a, b) { return a + b; }\n" "module.exports = { add };\n"
+        code = "function add(a, b) { return a + b; }\nmodule.exports = { add };\n"
         target = _make_js_target(tmp_path, code)
         assert NetworkRule().check(target) == []
 
@@ -278,7 +278,7 @@ class TestNetworkRule:
 
     def test_network_findings_have_line_numbers(self, tmp_path):
         """Findings reference line numbers."""
-        code = "// line 1\n" "// line 2\n" 'await fetch("https://webhook.site/abc");\n'
+        code = '// line 1\n// line 2\nawait fetch("https://webhook.site/abc");\n'
         target = _make_js_target(tmp_path, code)
         findings = NetworkRule().check(target)
         assert findings[0].line == 3
@@ -323,7 +323,7 @@ class TestSubprocessRule:
 
     def test_subprocess_clean_code_passes(self, tmp_path):
         """No subprocess usage → 0 findings."""
-        code = "const fs = require('fs');\n" "function readFile(p) { return fs.readFileSync(p); }\n"
+        code = "const fs = require('fs');\nfunction readFile(p) { return fs.readFileSync(p); }\n"
         target = _make_js_target(tmp_path, code)
         assert SubprocessRule().check(target) == []
 
@@ -596,7 +596,7 @@ class TestSecretsRule:
 
     def test_secrets_clean_code_passes(self, tmp_path):
         """No secrets → 0 findings."""
-        code = "const name = process.env.APP_NAME;\n" "function greet() { return 'hello'; }\n"
+        code = "const name = process.env.APP_NAME;\nfunction greet() { return 'hello'; }\n"
         target = _make_js_target(tmp_path, code)
         assert SecretsRule().check(target) == []
 

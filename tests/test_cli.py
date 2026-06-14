@@ -37,9 +37,9 @@ def test_rules_command(runner):
     result = runner.invoke(main, ["rules"])
     assert result.exit_code == 0
     for rule_id in ("MCP001", "MCP002", "MCP003", "MCP004", "MCP005", "MCP006"):
-        assert (
-            rule_id in result.output
-        ), f"Expected {rule_id} in rules output, got:\n{result.output}"
+        assert rule_id in result.output, (
+            f"Expected {rule_id} in rules output, got:\n{result.output}"
+        )
 
 
 def test_rules_command_shows_titles(runner):

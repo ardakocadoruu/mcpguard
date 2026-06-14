@@ -19,8 +19,7 @@ from mcpguard.scanner import ScanResult
 __all__ = ["render_sarif"]
 
 _SARIF_SCHEMA = (
-    "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/"
-    "Schemata/sarif-schema-2.1.0.json"
+    "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
 )
 
 _SEVERITY_TO_LEVEL: dict[str, str] = {
